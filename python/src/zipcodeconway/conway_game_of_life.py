@@ -21,7 +21,15 @@ class ConwayGameOfLife:
         Which cells are alive or dead in generation 0.
         Allocates and returns the starting matrix of size 'dimension'.
         """
-        return [[0]]
+       import random
+    matrix = []
+    for i in range (dimension):
+        row = []
+        for j in range(dimension):
+            row.append(random, randint(0,1))
+            matrix.append(row)
+        
+        return matrix
 
     def simulate(self, max_generations: int) -> list[list[int]]:
         """
