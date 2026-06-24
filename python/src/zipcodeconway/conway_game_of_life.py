@@ -27,27 +27,35 @@ class ConwayGameOfLife:
             row = []
             for j in range(dimension):
                 row.append(random.randint(0, 1))
-            matrix.append(row)      # <-- outside the inner loop
-        return matrix    
+            matrix.append(row)
+        return matrix
 
     def simulate(self, max_generations: int) -> list[list[int]]:
         """
-        Simulate Conway's Game of Life for max_generations and return final matrix.
-
-        Starter flow:
-        - display current generation
-        - compute each next cell using is_alive(...)
-        - copy next_generation into current_generation and clear next_generation
-        - sleep briefly so animation can be seen
+        Run the simulation for max_generations and return the final state.
+        Displays each generation in the window.
         """
-        return [[0]]
+        for generation in range(max_generations - 1):
+            self.display_window.display(self.current_generation, generation)
+
+            for row in range(self.dimension):
+                for col in range(self.dimension):
+                    self.next_generation[row][col] = self.is_alive(row, col, self.current_generation)
+
+            self.copy_and_zero_out(self.next_generation, self.current_generation)
+            self.display_window.sleep(100)
+
+        return self.current_generation
 
     def copy_and_zero_out(self, next_matrix: list[list[int]], current_matrix: list[list[int]]) -> None:
         """
         Copy all values from next_matrix to current_matrix,
         then set all values in next_matrix to 0.
         """
-        pass
+        for row in range(self.dimension):
+            for col in range(self.dimension):
+                current_matrix[row][col] = next_matrix[row][col]
+                next_matrix[row][col] = 0
 
     def is_alive(self, row: int, col: int, world: list[list[int]]) -> int:
         """
@@ -61,7 +69,19 @@ class ConwayGameOfLife:
 
         Use wraparound edges: top/bottom and left/right connect.
         """
-        return 0
+        live_neighbors = 0
+        for dr in [-1, 0, 1]:
+            for dc in [-1, 0, 1]:
+                if dr == 0 and dc == 0:
+                    continue
+                r = (row + dr) % self.dimension
+                c = (col + dc) % self.dimension
+                live_neighbors += world[r][c]
+
+        if world[row][col] == 1:
+            return 1 if live_neighbors in (2, 3) else 0
+        else:
+            return 1 if live_neighbors == 3 else 0
 
 
 def main() -> None:

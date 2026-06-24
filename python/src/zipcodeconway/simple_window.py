@@ -1,4 +1,8 @@
-import tkinter as tk
+try:
+    import tkinter as tk
+    _TK_AVAILABLE = True
+except ModuleNotFoundError:
+    _TK_AVAILABLE = False
 
 
 class SimpleWindow:
@@ -9,6 +13,12 @@ class SimpleWindow:
         self.dimension = dimension
         self.box_dim = 10
         self.pixel_size = max(100, self.dimension * self.box_dim)
+
+        if not _TK_AVAILABLE:
+            self.enabled = False
+            self.root = None
+            self.canvas = None
+            return
 
         try:
             self.root = tk.Tk()
